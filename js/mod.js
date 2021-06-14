@@ -3,10 +3,11 @@ let modInfo = {
 	id: "mymod",
 	author: "nobody",
 	pointsName: "points",
+	modFiles: ["layers.js", "tree.js"],
+
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	
 	offlineLimit: 1,  // In hours
 }
 
@@ -61,6 +62,11 @@ function isEndgame() {
 
 
 // Less important things beyond this point!
+
+// Style for the background, can be a function
+var backgroundStyle = {
+
+}
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {

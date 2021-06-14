@@ -6,7 +6,9 @@ This also introduces the "tree" component, which can be used in your layers as w
 
 ## layoutInfo
 The most important part is layoutInfo, containing:
-- startTab: The id of the default tab to show on the left at the start.
+- startTab: The id of the default tab to show on the right at the start.
+- startNavTab: The id of the default tab to show on the left at the start.
+
 - showTree: True if the tree tab should be shown at the start of the game. (The other tab will fill the whole page)
 - treeLayout: If present, overrides the tree layout and places nodes as you describe instead (explained in the next section).
 

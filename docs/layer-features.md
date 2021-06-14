@@ -46,7 +46,8 @@ You can make almost any value dynamic by using a function in its place, includin
         {
             key: "p", // What the hotkey button is. Use uppercase if it's combined with shift, or "ctrl+x" for holding down ctrl.
             description: "p: reset your points for prestige points", // The description of the hotkey that is displayed in the game's How To Play tab
-            onPress() { if (player.p.unlocked) doReset("p") }
+            onPress() { if (player.p.unlocked) doReset("p") },
+            unlocked() {return hasMilestone('p', 3)} // Determines if you can use the hotkey, optional
         }
     ]
     ```
@@ -59,7 +60,7 @@ You can make almost any value dynamic by using a function in its place, includin
 
 ## Big features (all optional)
 
-- upgrades: A grid of one-time purchases which can have unique upgrade conditions, currency costs, and bonuses. [See here for more info.](upgrades.md)
+- upgrades: A set of one-time purchases which can have unique upgrade conditions, currency costs, and bonuses. [See here for more info.](upgrades.md)
 
 - milestones: A list of bonuses gained upon reaching certain thresholds of a resource. Often used for automation/QOL. [See here for more info.](milestones.md)
 
@@ -75,9 +76,11 @@ You can make almost any value dynamic by using a function in its place, includin
 
 - achievements: Kind of like milestones, but with a different display style and some other differences. Extra features are on the way at a later date! [See here for more info.](achievements.md)
 
+- achievementPopups, milestonePopups: **optional**, If false, disables popup message when you get the achievement/milestone. True by default.
+
 - infoboxes: Displays some text in a box that can be shown or hidden. [See here for more info.](infoboxes.md)
 
-- achievementPopups, milestonePopups: **optional**, If false, disables popup message when you get the achievement/milestone. True by default.
+- grid: A grid of buttons that behave the same, but have their own data.[See here for more info.](grids.md)
 
 ## Prestige formula features
 
@@ -100,7 +103,10 @@ You can make almost any value dynamic by using a function in its place, includin
 
 - roundUpCost: **optional**. a bool, which is true if the resource cost needs to be rounded up. (use if the base resource is a "static" currency.)
 
-- gainMult(), gainExp(): **optional**. Functions that calculate the multiplier and exponent on resource gain from upgrades and boosts and such. Plug in any bonuses here.
+- gainMult(), gainExp(): **optional**. For normal layers, these functions calculate the multiplier and exponent on resource gain from upgrades and boosts and such. Plug in most bonuses here.
+    For static layers, they instead multiply and roots the cost of the resource. (So to make a boost you want to make gainMult smaller and gainExp larger.)
+
+- directMult(): **optional**. Directly multiplies the resource gain, after exponents and softcaps. For static layers, actually multiplies resource gain instead of reducing the cost.
 
 - softcap, softcapPower: **optional**. For normal layers, gain beyond [softcap] points is put to the [softcapPower]th power
     Default for softcap is e1e7, and for power is 0.5.
@@ -129,12 +135,14 @@ You can make almost any value dynamic by using a function in its place, includin
 
 - position: **optional**. Determines the horizontal position of the layer in its row in a standard tree. By default, it uses the layer id, and layers are sorted in alphabetical order.
 
-- branches: **optional**. An array of layer/node ids. On a tree, a line will appear from this layer to all of the layers in the list. Alternatively, an entry in the array can be a 2-element array consisting of the layer id and a color value. The color value can either be a string with a hex color code, or a number from 1-3 (theme-affected colors).
+- branches: **optional**. An array of layer/node ids. On a tree, a line will appear from this layer to all of the layers in the list. Alternatively, an entry in the array can be a 2-element array consisting of the layer id and a color value. The color value can either be a string with a hex color code, or a number from 1-3 (theme-affected colors). A third element in the array optionally specifies line width.
 
 - nodeStyle: **optional**. A CSS object, where the keys are CSS attributes, which styles this layer's node on the tree.
 
 - tooltip() / tooltipLocked(): **optional**. Functions that return text, which is the tooltip for the node when the layer is unlocked or locked, respectively. By default the tooltips behave the same as in the original Prestige Tree.
     If the value is "", the tooltip will be disabled.
+
+- marked: **optional** Adds a mark to the corner of the node. If it's "true" it will be a star, but it can also be an image URL.
 
 ## Other features
 
@@ -154,6 +162,8 @@ You can make almost any value dynamic by using a function in its place, includin
 
 - shouldNotify: **optional**. A function to return true if this layer should be highlighted in the tree. The layer will automatically be highlighted if you can buy an upgrade whether you have this or not.
 
+- glowColor: **optional**. The color that this layer will be highlighted if it should notify. The default is red. You can use this if you want several different notification types!
+
 - componentStyles: **optional**. An object that contains a set of functions returning CSS objects. Each of these will be applied to any components on the layer with the type of its id. Example:
 
 ```js
@@ -162,6 +172,12 @@ componentStyles: {
     "prestige-button"() { return {'color': '#AA66AA'} }
 }
 ```
+
+- leftTab: **optional**, if true, this layer will use the left tab instead of the right tab.
+
+- previousTab: **optional**, a layer's id. If a layer has a previousTab, the layer will always have a back arrow and pressing the back arrow on this layer will take you to the layer with this id. 
+
+- deactivated: **optional**, if this is true, hasUpgrade, hasChallenge, hasAchievement, and hasMilestone will return false for things in the layer, and you will be unable to buy or click things on the layer. You will have to disable effects of buyables, the innate layer effect, and possibly other things yourself.
 
 ## Custom Prestige type  
 (All of these can also be used by other prestige types)

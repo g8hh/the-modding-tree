@@ -1,6 +1,6 @@
 # Achievements
 
-Achievements are awarded to the player when they meet a certain goal, and optionally give some benefit. Currently they are pretty basic, but additional features will be added later to help.
+Achievements are awarded to the player when they meet a certain goal, and optionally give some benefit.
 
 You can make global achievements by putting them in a side layer by making its row equal to "side" instead of a number.
 
@@ -13,8 +13,6 @@ Achievements should be formatted like this:
 
 ```js
 achievements: {
-    rows: # of rows,
-    cols: # of columns,
     11: {
         name: "Blah",
         more features
@@ -23,7 +21,7 @@ achievements: {
 }
 ```
 
-Each achievement should have an id where the first digit is the row and the second digit is the column.
+Usually, each achievement should have an id where the first digit is the row and the second digit is the column.
 
 Individual achievement can have these features:
 

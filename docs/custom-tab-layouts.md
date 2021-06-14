@@ -1,6 +1,6 @@
 # Custom tab layouts
 
-Note: If you are using subtabs, `tabFormat` is used differently, but you still use the same format within each subtabs. [See here for more on subtabs](subtabs-and-microtabs.md).
+Note: If you are using subtabs, `tabFormat` is used differently, but the same format is used for defining their layouts. [See here for more on subtabs](subtabs-and-microtabs.md).
 
 Custom tab layouts can be used to do basically anything in a tab window, especially combined with the "style" layer feature. The `tabFormat` feature is an array of things, like this:
 
@@ -35,17 +35,23 @@ These are the existing components, but you can create more in [components.js](/j
 
 - column: Display a list of components vertically. The argument is an array of components in the tab layout format. This is useful to display columns within a row.
 
-- main-display: The text that displays the main currency for the layer and its effects.
+- main-display: The text that displays the main currency for the layer and its effects. The argument is the amount of precision to use, allowing it to display non-whole numbers.
 
 - resource-display: The text that displays the currency that this layer is based on, as well as the best and/or total values for this layer's prestige currency (if they are put in `startData` for this layer).
 
 - prestige-button: The argument is a string that the prestige button should say before the amount of currency you will gain. It can also be a function that returns updating text.
 
-- upgrades: The layer's upgrades. The argument is optional, and is a the list of rows this component should include, if it doesn't have all of them.
+- text-input: A text input box. The argument is the name of the variable in player[layer] that the input is for, player[layer][argument]
+    (Works with strings, numbers, and Decimals!)
 
-- milestones, challenges, achievements: Display the upgrades, milestones, and challenges for a layer, as appropriate.
+- slider: Lets the user input a value with a slider. The argument a 3-element array: [name, min, max].
+    The name is the name of the variable in player[layer] that the input  is for, and min and max are the limits of the slider.
+    (Does not work for Decimal values)
 
-- buyables, clickables: Display all of the buyables/clickables for this layer, as appropriate. The argument is optional and is the size of the boxes in pixels.
+- drop-down: Lets the user input a value with a dropdown menu. The argument a 2-element array: [name, options].
+    The name is the name of the variable in player[layer] that the input is for, and options is an array of strings for options you can use.
+
+- upgrades, milestones, challenges, achievements, buyables, clickables: Displays the layers upgrades/challenges/etc, as appropriate. The argument is optional, and is a the list of rows this component should include, if it doesn't have all of them.
 
 - microtabs: Display a set of subtabs for an area. The argument is the name of the set of microtabs in the "microtabs" feature.
 
@@ -56,11 +62,19 @@ These are the existing components, but you can create more in [components.js](/j
 - tree: Displays a tree. The argument is an array of arrays containing the names of the nodes in the tree (first by row, then by column)
     [See here for more information on tree layouts and nodes!](trees-and-tree-customization.md)
 
-- toggle: A toggle button that toggles a bool value. The data is a pair that identifies what bool to toggle, e.g. `[layer, id]`
+- upgrade-tree, buyable-tree, clickable-tree: Displays a tree of upgrades/buyables/clickables from this layer. The argument is an array of arrays containing the ids of the upgrade/etc in the tree (first by row, then by column). A tree can only have one type of component in it.
+
+- toggle: A toggle button that toggles a bool value. The argument is a pair that identifies the location in player of the bool to toggle, e.g. `[layer, id]`. 'layer' also affects the color of the toggle.
+
+- grid: Displays the gridable grid for the layer. If you need more than one grid, use a layer proxy. The argument is optional, and is a the list of rows this component should include, if it doesn't have all of them.
+
+- layer-proxy: Lets you use components from another layer. The argument is a pair, `[layer, data]`, consisting of the id of the layer to proxy from, and the tabFormat for the components to show.
+    (Note: you cannot use a microtab within a layer proxy)
+
 
 The rest of the components are sub-components. They can be used just like other components, but are typically part of another component.
 
-- upgrade, milestone, challenge, buyable, clickable, achievement: An individual upgrade, challenge, etc. The argument is the id. This can be used if you want to have upgrades split up across multiple subtabs, for example.
+- upgrade, milestone, challenge, buyable, clickable, achievement, gridable: An individual upgrade, challenge, etc. The argument is the id. This can be used if you want to have upgrades split up across multiple subtabs, for example.
 
 - respec-button, master-button: The respec and master buttons for buyables and clickables, respectively.
 

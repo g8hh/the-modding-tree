@@ -35,3 +35,6 @@ Features:
 - layer: **assigned automagically**. It's the same value as the name of this layer, so you can do `player[this.layer].points` or similar.
 
 - id: **assigned automagically**. It's the "key" which the bar was stored under, for convenient access. The bar in the example's id is "bigBar".
+
+
+- instant: **very optional**. If this is true, the bar will instantly snap to the current value instead of animating in between. Good for things involving precise timing.

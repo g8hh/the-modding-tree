@@ -47,7 +47,7 @@ function format(decimal, precision = 2, small) {
         player.hasNaN = true;
         return "NaN"
     }
-    if (decimal.sign < 0) return "-" + format(decimal.neg(), precision)
+    if (decimal.sign < 0) return "-" + format(decimal.neg(), precision, small)
     if (decimal.mag == Number.POSITIVE_INFINITY) return "Infinity"
     if (decimal.gte("eeee1000")) {
         var slog = decimal.slog()

@@ -1,10 +1,9 @@
 var player;
 var needCanvasUpdate = true;
-var gameEnded = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.6.3",
+	tmtNum: "2.6.5.1",
 	tmtName: "Fixed Reality"
 }
 
@@ -95,7 +94,8 @@ function shouldNotify(layer){
 	if (isPlainObject(tmp[layer].tabFormat)) {
 		for (subtab in tmp[layer].tabFormat){
 			if (subtabShouldNotify(layer, 'mainTabs', subtab)) {
-				tmp[layer].trueGlowColor = tmp[layer].tabFormat[subtab].glowColor
+				tmp[layer].trueGlowColor = tmp[layer].tabFormat[subtab].glowColor || defaultGlow
+
 				return true
 			}
 		}
@@ -129,7 +129,6 @@ function canReset(layer)
 function rowReset(row, layer) {
 	for (lr in ROW_LAYERS[row]){
 		if(layers[lr].doReset) {
-
 			if (!isNaN(row)) Vue.set(player[lr], "activeChallenge", null) // Exit challenges on any row reset on an equal or higher row
 			run(layers[lr].doReset, layers[lr], layer)
 		}
@@ -145,29 +144,22 @@ function layerDataReset(layer, keep = []) {
 		if (player[layer][keep[thing]] !== undefined)
 			storedData[keep[thing]] = player[layer][keep[thing]]
 	}
+
 	Vue.set(player[layer], "buyables", getStartBuyables(layer))
 	Vue.set(player[layer], "clickables", getStartClickables(layer))
 	Vue.set(player[layer], "challenges", getStartChallenges(layer))
+	Vue.set(player[layer], "grid", getStartGrid(layer))
 
 	layOver(player[layer], getStartLayerData(layer))
 	player[layer].upgrades = []
 	player[layer].milestones = []
 	player[layer].achievements = []
-	player[layer].challenges = getStartChallenges(layer)
-	resetBuyables(layer)
 
-	if (layers[layer].clickables && !player[layer].clickables) 
-		player[layer].clickables = getStartClickables(layer)
 	for (thing in storedData) {
 		player[layer][thing] =storedData[thing]
 	}
 }
 
-function resetBuyables(layer){
-	if (layers[layer].buyables) 
-		player[layer].buyables = getStartBuyables(layer)
-	player[layer].spentOnBuyables = decimalZero
-}
 
 
 function addPoints(layer, gain) {
@@ -180,21 +172,20 @@ function generatePoints(layer, diff) {
 	addPoints(layer, tmp[layer].resetGain.times(diff))
 }
 
-var prevOnReset
-
 function doReset(layer, force=false) {
 	if (tmp[layer].type == "none") return
 	let row = tmp[layer].row
 	if (!force) {
+		
+		if (tmp[layer].canReset === false) return;
+		
 		if (tmp[layer].baseAmount.lt(tmp[layer].requires)) return;
 		let gain = tmp[layer].resetGain
 		if (tmp[layer].type=="static") {
 			if (tmp[layer].baseAmount.lt(tmp[layer].nextAt)) return;
 			gain =(tmp[layer].canBuyMax ? gain : 1)
 		} 
-		if (tmp[layer].type=="custom") {
-			if (!tmp[layer].canReset) return;
-		} 
+
 
 		if (layers[layer].onPrestige)
 			run(layers[layer].onPrestige, layers[layer], gain)
@@ -214,24 +205,22 @@ function doReset(layer, force=false) {
 			}
 		}
 	
-		tmp[layer].baseAmount = decimalZero // quick fix
 	}
 
 	if (run(layers[layer].resetsNothing, layers[layer])) return
+	tmp[layer].baseAmount = decimalZero // quick fix
 
 
 	for (layerResetting in layers) {
 		if (row >= layers[layerResetting].row && (!force || layerResetting != layer)) completeChallenge(layerResetting)
 	}
 
-	prevOnReset = {...player} 
 	player.points = (row == 0 ? decimalZero : getStartPoints())
 
 	for (let x = row; x >= 0; x--) rowReset(x, layer)
 	for (r in OTHER_LAYERS){
 		rowReset(r, layer)
 	}
-	prevOnReset = undefined
 
 	player[layer].resetTime = 0
 
@@ -257,7 +246,7 @@ function resetRow(row) {
 
 function startChallenge(layer, x) {
 	let enter = false
-	if (!player[layer].unlocked) return
+	if (!player[layer].unlocked || !tmp[layer].challenges[x].unlocked) return
 	if (player[layer].activeChallenge == x) {
 		completeChallenge(layer, x)
 		Vue.set(player[layer], "activeChallenge", null)
@@ -330,15 +319,15 @@ function autobuyUpgrades(layer){
 }
 
 function gameLoop(diff) {
-	if (isEndgame() || gameEnded){
-		gameEnded = 1
+	if (isEndgame() || tmp.gameEnded){
+		tmp.gameEnded = true
 		clearParticles()
 	}
 
 	if (isNaN(diff) || diff < 0) diff = 0
-	if (gameEnded && !player.keepGoing) {
+	if (tmp.gameEnded && !player.keepGoing) {
 		diff = 0
-		//player.tab = "gameEnded"
+		//player.tab = "tmp.gameEnded"
 		clearParticles()
 	}
 
@@ -407,7 +396,7 @@ var ticking = false
 var interval = setInterval(function() {
 	if (player===undefined||tmp===undefined) return;
 	if (ticking) return;
-	if (gameEnded&&!player.keepGoing) return;
+	if (tmp.gameEnded&&!player.keepGoing) return;
 	ticking = true
 	let now = Date.now()
 	let diff = (now - player.time) / 1e3
@@ -419,7 +408,7 @@ var interval = setInterval(function() {
 			player.offTime.remain -= offlineDiff
 			diff += offlineDiff
 		}
-		if (!player.offlineProd || player.offTime.remain <= 0) player.offTime = undefined
+		if (!options.offlineProd || player.offTime.remain <= 0) player.offTime = undefined
 	}
 	if (player.devSpeed) diff *= player.devSpeed
 	player.time = now

@@ -256,6 +256,7 @@ function toNumber(x) {
 }
 
 function updateMilestones(layer) {
+	if (tmp[layer].deactivated) return
 	for (id in layers[layer].milestones) {
 		if (!(hasMilestone(layer, id)) && layers[layer].milestones[id].done()) {
 			player[layer].milestones.push(id)
@@ -267,6 +268,7 @@ function updateMilestones(layer) {
 }
 
 function updateAchievements(layer) {
+	if (tmp[layer].deactivated) return
 	for (id in layers[layer].achievements) {
 		if (isPlainObject(layers[layer].achievements[id]) && !(hasAchievement(layer, id)) && layers[layer].achievements[id].done()) {
 			player[layer].achievements.push(id)
@@ -305,9 +307,9 @@ ctrlDown = false
 
 document.onkeydown = function (e) {
 	if (player === undefined) return;
-	if (gameEnded && !player.keepGoing) return;
 	shiftDown = e.shiftKey
 	ctrlDown = e.ctrlKey
+	if (tmp.gameEnded && !player.keepGoing) return;
 	let key = e.key
 	if (ctrlDown) key = "ctrl+" + key
 	if (onFocused) return

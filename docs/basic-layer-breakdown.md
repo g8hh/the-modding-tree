@@ -1,6 +1,6 @@
 # Basic layer breakdown
 
-This is a very minimal layer with minimal features. Most things will require additional features.
+This is a relatively minimal layer with few features. Most things will require additional features.
 
 ```js
 addLayer("p", {
@@ -25,7 +25,7 @@ addLayer("p", {
     gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
         return new Decimal(1)               // Factor in any bonuses multiplying gain here.
     },
-    gainExp() {                             // Returns your exponent to your gain of the prestige resource.
+    gainExp() {                             // Returns the exponent to your gain of the prestige resource.
         return new Decimal(1)
     },
 

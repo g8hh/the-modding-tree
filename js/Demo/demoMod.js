@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "2.6.3",
+	num: "2.6.5.1",
 	name: "Fixed Reality",
 }
 
@@ -61,7 +61,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal("11"))
 }
 
 

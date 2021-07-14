@@ -177,7 +177,7 @@ componentStyles: {
 
 - previousTab: **optional**, a layer's id. If a layer has a previousTab, the layer will always have a back arrow and pressing the back arrow on this layer will take you to the layer with this id. 
 
-- deactivated: **optional**, if this is true, hasUpgrade, hasChallenge, hasAchievement, and hasMilestone will return false for things in the layer, and you will be unable to buy or click things on the layer. You will have to disable effects of buyables, the innate layer effect, and possibly other things yourself.
+- deactivated: **optional**, if this is true, hasUpgrade, hasChallenge, hasAchievement, and hasMilestone will return false for things in the layer, and you will be unable to buy or click things, or gain achievements/milestones on the layer. You will have to disable effects of buyables, the innate layer effect, and possibly other things yourself.
 
 ## Custom Prestige type  
 (All of these can also be used by other prestige types)

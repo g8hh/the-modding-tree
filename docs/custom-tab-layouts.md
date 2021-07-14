@@ -7,7 +7,7 @@ Custom tab layouts can be used to do basically anything in a tab window, especia
 ```js
 tabFormat: [
     "main-display",
-    ["prestige-button", function() { return "Melt your points into " }],
+    ["prestige-button"],
     "blank",
     ["display-text",
         function() { return 'I have ' + format(player.points) + ' pointy points!' },
@@ -39,7 +39,7 @@ These are the existing components, but you can create more in [components.js](/j
 
 - resource-display: The text that displays the currency that this layer is based on, as well as the best and/or total values for this layer's prestige currency (if they are put in `startData` for this layer).
 
-- prestige-button: The argument is a string that the prestige button should say before the amount of currency you will gain. It can also be a function that returns updating text.
+- prestige-button: The button to reset for a currency in this layer.
 
 - text-input: A text input box. The argument is the name of the variable in player[layer] that the input is for, player[layer][argument]
     (Works with strings, numbers, and Decimals!)
